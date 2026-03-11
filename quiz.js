@@ -29,7 +29,7 @@ const questions = [
         ]
     },
     {
-        question: "What is the largest planet in our solar sytem",
+        question: "What is the largest planet in our solar system",
         answers: [
             { text: "Earth", correct: false },
             { text: "Saturn", correct: false },
@@ -51,7 +51,7 @@ const questions = [
         answers: [
             { text: "Mark Zuckerberg", correct: true },
             { text: "Bill Gates", correct: false },
-            { text: "Steve Job", correct: false },
+            { text: "Steve Jobs", correct: false },
             { text: "Elon Musk", correct: false }
         ]
     },
@@ -74,7 +74,7 @@ const questions = [
         ]
     },
     {
-        question: "Who is the current president of NIgeria",
+        question: "Who is the current president of Nigeria",
         answers: [
             { text: "Muhammadu Buhari", correct: false },
             { text: "Goodluck Jonathan", correct: false },
@@ -98,6 +98,8 @@ const questions = [
 const theQuestion = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
+const welcomeScreen = document.getElementById("welcomeScreen");
+const startButton = document.getElementById("startButton");
 
 
 let currentQuestionIndex = 0;
@@ -106,6 +108,8 @@ let score = 0;
 // Start quiz
 
 function startQuiz() {
+    welcomeScreen.style.display = "none";
+
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
@@ -116,7 +120,7 @@ function startQuiz() {
 
 function showQuestion() {
     resetState();
-    let currentQuestion = questions[currentQuestionIndex];
+    const currentQuestion = questions[currentQuestionIndex];
     theQuestion.innerHTML = currentQuestion.question;
 
     currentQuestion.answers.forEach(answer => {
@@ -137,9 +141,7 @@ function showQuestion() {
 
 function resetState() {
     nextButton.style.display = "none";
-    while (answerButtons.firstChild) {
-        answerButtons.removeChild(answerButtons.firstChild);
-    }
+    answerButtons.innerHTML = "";
 }
 
 
@@ -156,7 +158,11 @@ function selectAnswer(e) {
         selectedBtn.style.backgroundColor = "red";
     }
     Array.from(answerButtons.children).forEach(button => {
+        if (button.dataset.correct === "true") {
+            button.style.backgroundColor = "green";
+        }
         button.disabled = true;
+
     });
     nextButton.style.display = "block";
 }
@@ -185,4 +191,4 @@ function showScore() {
     nextButton.style.display = "block";
 }
 
-startQuiz();
+startButton.addEventListener("click", startQuiz);
