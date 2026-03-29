@@ -21,7 +21,6 @@ An interactive and responsive Quiz Game built with modern frontend technologies.
 * HTML5
 * CSS3
 * JavaScript (ES6+)
-* React
 
 ---
 
