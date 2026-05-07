@@ -1,5 +1,3 @@
-// Add questions
-
 const questions = [
     {
         question: "What is the capital of Nigeria?",
@@ -11,7 +9,7 @@ const questions = [
         ]
     },
     {
-        question: "Which of the following is a type of rock",
+        question: "Which of the following is a type of rock?",
         answers: [
             { text: "Granite", correct: true },
             { text: "Wood", correct: false },
@@ -20,16 +18,16 @@ const questions = [
         ]
     },
     {
-        question: "Who is the author of the book 'Things fall apart'?",
+        question: "Who authored the book 'Things Fall Apart'?",
         answers: [
             { text: "Chinua Achebe", correct: true },
             { text: "Wole Soyinka", correct: false },
             { text: "Ngugi wa Thiong'o", correct: false },
-            { text: "J.K Rowling", correct: false }
+            { text: "J.K. Rowling", correct: false }
         ]
     },
     {
-        question: "What is the largest planet in our solar system",
+        question: "What is the largest planet in our solar system?",
         answers: [
             { text: "Earth", correct: false },
             { text: "Saturn", correct: false },
@@ -38,7 +36,7 @@ const questions = [
         ]
     },
     {
-        question: "Which Nigerian dish is made from cassava",
+        question: "Which Nigerian dish is made from cassava?",
         answers: [
             { text: "Jollof rice", correct: false },
             { text: "Fufu", correct: true },
@@ -47,7 +45,7 @@ const questions = [
         ]
     },
     {
-        question: "Who is the founder of Facebook",
+        question: "Who is the founder of Facebook?",
         answers: [
             { text: "Mark Zuckerberg", correct: true },
             { text: "Bill Gates", correct: false },
@@ -56,7 +54,7 @@ const questions = [
         ]
     },
     {
-        question: "What is the chemical symbol of gold?",
+        question: "What is the chemical symbol for gold?",
         answers: [
             { text: "Ag", correct: false },
             { text: "Au", correct: true },
@@ -65,7 +63,7 @@ const questions = [
         ]
     },
     {
-        question: "Which of the following is a type of computer network",
+        question: "Which of the following is a type of computer network?",
         answers: [
             { text: "LAN", correct: false },
             { text: "WAN", correct: false },
@@ -74,7 +72,7 @@ const questions = [
         ]
     },
     {
-        question: "Who is the current president of Nigeria",
+        question: "Who is the current president of Nigeria?",
         answers: [
             { text: "Muhammadu Buhari", correct: false },
             { text: "Goodluck Jonathan", correct: false },
@@ -83,7 +81,7 @@ const questions = [
         ]
     },
     {
-        question: "What is the largest mammal on earth",
+        question: "What is the largest mammal on earth?",
         answers: [
             { text: "Elephant", correct: false },
             { text: "Blue whale", correct: true },
@@ -93,90 +91,82 @@ const questions = [
     }
 ];
 
-// Select elements
-
-const theQuestion = document.getElementById("question");
-const answerButtons = document.getElementById("answer-buttons");
-const nextButton = document.getElementById("next-btn");
-const welcomeScreen = document.getElementById("welcomeScreen");
-const startButton = document.getElementById("startButton");
-
+// DOM references
+const welcomeScreen   = document.getElementById("welcomeScreen");
+const quizScreen      = document.getElementById("quizScreen");
+const scoreScreen     = document.getElementById("scoreScreen");
+const startButton     = document.getElementById("startButton");
+const restartBtn      = document.getElementById("restartBtn");
+const theQuestion     = document.getElementById("question");
+const answerButtons   = document.getElementById("answer-buttons");
+const nextButton      = document.getElementById("next-btn");
+const progressBar     = document.getElementById("progressBar");
+const questionCounter = document.getElementById("questionCounter");
+const scoreDisplay    = document.getElementById("scoreDisplay");
 
 let currentQuestionIndex = 0;
 let score = 0;
 
-// Start quiz
-
 function startQuiz() {
-    welcomeScreen.style.display = "none";
-
     currentQuestionIndex = 0;
     score = 0;
-    nextButton.innerHTML = "Next";
+
+    welcomeScreen.style.display = "none";
+    scoreScreen.style.display   = "none";
+    quizScreen.style.display    = "block";
+
     showQuestion();
 }
 
-// Display the question
-
 function showQuestion() {
     resetState();
-    const currentQuestion = questions[currentQuestionIndex];
-    theQuestion.innerHTML = currentQuestion.question;
 
-    currentQuestion.answers.forEach(answer => {
-        const button = document.createElement("button");
-        button.innerHTML = answer.text;
-        answerButtons.appendChild(button);
+    const q   = questions[currentQuestionIndex];
+    const num = currentQuestionIndex + 1;
 
-        if (answer.correct) {
-            button.dataset.correct = answer.correct;
-        }
-        button.addEventListener("click", selectAnswer);
+    theQuestion.textContent = q.question;
+    questionCounter.textContent = `${num} / ${questions.length}`;
+    scoreDisplay.textContent = `Score: ${score}`;
+    progressBar.style.width = `${(num / questions.length) * 100}%`;
+
+    q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer.text;
+        btn.classList.add("answer-btn");
+        if (answer.correct) btn.dataset.correct = "true";
+        btn.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(btn);
     });
 }
-
-
-
-//Resetting the question
 
 function resetState() {
     nextButton.style.display = "none";
-    answerButtons.innerHTML = "";
+    answerButtons.innerHTML  = "";
 }
 
-
-//  When is being selected
-
 function selectAnswer(e) {
-    const selectedBtn = e.target;
-    const isCorrect = selectedBtn.dataset.correct === "true";
+    const selected  = e.target;
+    const isCorrect = selected.dataset.correct === "true";
 
     if (isCorrect) {
         score++;
-        selectedBtn.style.backgroundColor = "green";
+        selected.classList.add("correct");
     } else {
-        selectedBtn.style.backgroundColor = "red";
+        selected.classList.add("wrong");
     }
-    Array.from(answerButtons.children).forEach(button => {
-        if (button.dataset.correct === "true") {
-            button.style.backgroundColor = "green";
-        }
-        button.disabled = true;
 
+    // Reveal the correct answer and disable all buttons
+    Array.from(answerButtons.children).forEach(btn => {
+        if (btn.dataset.correct === "true") btn.classList.add("correct");
+        btn.disabled = true;
     });
-    nextButton.style.display = "block";
+
+    scoreDisplay.textContent = `Score: ${score}`;
+    nextButton.style.display = "inline-flex";
 }
 
-
-
 nextButton.addEventListener("click", () => {
-
-    if (nextButton.innerHTML === "Restart") {
-        startQuiz();
-        return;
-    }
     currentQuestionIndex++;
-
     if (currentQuestionIndex < questions.length) {
         showQuestion();
     } else {
@@ -185,10 +175,35 @@ nextButton.addEventListener("click", () => {
 });
 
 function showScore() {
-    resetState();
-    theQuestion.innerHTML = `You scored ${score} out of ${questions.length}!`;
-    nextButton.innerHTML = "Restart";
-    nextButton.style.display = "block";
+    quizScreen.style.display = "none";
+    scoreScreen.style.display = "flex";
+
+    const pct = score / questions.length;
+    let emoji, heading, msg;
+
+    if (pct === 1) {
+        emoji   = "🏆";
+        heading = "Perfect score!";
+        msg     = "Outstanding — you got every single one right. A true scholar!";
+    } else if (pct >= 0.7) {
+        emoji   = "🎉";
+        heading = "Great job!";
+        msg     = "Solid performance. Just a couple more to master and you'll ace it next time.";
+    } else if (pct >= 0.4) {
+        emoji   = "📚";
+        heading = "Keep going!";
+        msg     = "Good effort! A bit more study and you'll be flying through these questions.";
+    } else {
+        emoji   = "💪";
+        heading = "Don't give up!";
+        msg     = "Every expert was once a beginner. Give it another shot!";
+    }
+
+    document.getElementById("scoreBadge").textContent   = emoji;
+    document.getElementById("scoreHeading").textContent = heading;
+    document.getElementById("scoreMsg").textContent     = msg;
+    document.getElementById("scoreFraction").textContent = `${score} / ${questions.length}`;
 }
 
 startButton.addEventListener("click", startQuiz);
+restartBtn.addEventListener("click", startQuiz);
